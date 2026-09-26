@@ -28,6 +28,45 @@ class EntryPayload(BaseModel):
     remark: str | None = None
 
 
+class ImportPayload(BaseModel):
+    """外部文件导入：前端解析后按行提交的字段集合。"""
+
+    rows: list[dict[str, Any]] = Field(default_factory=list)
+    source: str | None = None
+    file_name: str | None = None
+
+
+class ImportLineResult(BaseModel):
+    """逐行反馈：行号、记录编号、结论与可读原因。"""
+
+    line: int
+    record: str = ""
+    outcome: str  # created / updated / skipped / failed
+    message: str = ""
+
+
+class ImportReport(BaseModel):
+    ok: bool
+    message: str
+    busy: bool = False
+    source: str | None = None
+    file_name: str | None = None
+    total: int = 0
+    blank: int = 0
+    created: int = 0
+    updated: int = 0
+    skipped: int = 0
+    failed: int = 0
+    lines: list[ImportLineResult] = Field(default_factory=list)
+
+
+class UpdatePayload(BaseModel):
+    """详情页保存编辑时提交的字段与修订号（用于冲突检测）。"""
+
+    values: dict[str, Any] = Field(default_factory=dict)
+    revision: int | None = None
+
+
 
 class SampleEntry(BaseModel):
     """检测样品明细结构。"""
