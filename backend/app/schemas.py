@@ -28,6 +28,36 @@ class EntryPayload(BaseModel):
     remark: str | None = None
 
 
+class ImportRowResult(BaseModel):
+    """导入文件里每一行的处理结果。"""
+
+    row: int
+    key: str = ""
+    result: str
+    message: str
+
+
+class ImportSummary(BaseModel):
+    """一次导入的汇总计数，各项之和等于总行数。"""
+
+    total: int = 0
+    created: int = 0
+    updated: int = 0
+    unchanged: int = 0
+    duplicated: int = 0
+    failed: int = 0
+    skipped: int = 0
+
+
+class ImportResult(BaseModel):
+    """导入接口的统一返回：整体结论 + 汇总 + 逐行明细。"""
+
+    ok: bool
+    message: str
+    summary: ImportSummary = Field(default_factory=ImportSummary)
+    results: list[ImportRowResult] = Field(default_factory=list)
+
+
 
 class SampleEntry(BaseModel):
     """检测样品明细结构。"""
